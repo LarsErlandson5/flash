@@ -3,7 +3,9 @@ import React from 'react';
 // import './App.css';
 //import List from './Components/list';
 import axios from "axios";
+import Card from 'react-bootstrap/Card'
 import { Button } from 'react-bootstrap';
+
 
 class App extends React.Component {
 
@@ -11,15 +13,12 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      id: null,
+      data: null,
       dataReady: false,
-      name: 'batman',
-      age: 5,
-      job: 'hes Batman!',
-      count: 0
+      selectedCategory: 'none'
     };
-
   }
+
   addToCount = () => {
     this.setState((prevState) => {
       return { count: prevState.count + 1 };
@@ -29,7 +28,7 @@ class App extends React.Component {
     axios.get('http://localhost:5000/api/collections').then(res => {
       console.log(res);
       this.setState({
-        id: res.data,
+        data: res.data,
         dataReady: true
       });
     });
@@ -37,6 +36,12 @@ class App extends React.Component {
 
   getCollections = () => {
 
+  }
+
+  categoryButtonClicked = (title) => {
+    this.setState({
+      selectedCategory: title
+    })
   }
 
   render() {
@@ -49,16 +54,28 @@ class App extends React.Component {
 
     return (
       <div>
-        <Button variant="primary" size="lg" active>
-        I am a Button
-        </Button>
-        <h2>New App</h2>
-        <p>count:{this.state.count}</p>
-        <p>State called: {this.state.name}</p>
-        <p>age: {this.state.age}</p>
-        <div>{this.state.dataReady}</div>
-        <button onClick={this.addToCount}> Click</button>
-        {this.state.dataReady ? <div>{this.state.id[1].title}</div> : <div>oops</div>}
+        <Card style={{ width: '18rem' }}>
+          {
+            this.state.dataReady ? this.state.data.map((category, index) => (
+              <Card.Body key={index}>
+                <Card.Title>{category.title}</Card.Title>
+                <Button onClick={() => this.categoryButtonClicked(category.title)}
+                  variant="primary">Fip Card</Button>
+                {
+                  this.state.selectedCategory === category.title ? (
+                    category.cards.map((card, index) => (
+                      <div key={`card-${index}`}>
+                         <h3>     {card.word}</h3>
+                      </div> 
+                    ))
+                  ) : null
+                }
+              </Card.Body>
+            )) : <div>oops</div>
+          }
+
+        </Card>
+
       </div>
     );
   }
