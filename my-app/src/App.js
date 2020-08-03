@@ -63,6 +63,7 @@ class App extends React.Component {
                   variant="primary">Fip Card</Button>
                 {
                   this.state.selectedCategory === category.title ? (
+        
                     category.cards.map((card, index) => (
                       <div key={`card-${index}`}>
                          <h3>     {card.word}</h3>
